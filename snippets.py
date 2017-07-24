@@ -50,11 +50,11 @@ def get(name):
     
     
 def catalog():
-    """Retrieve names, keyword from the table order by name.
+    """Retrieve names from the table order by name.
     """
-    logging.info("Retrieving names, snippets order by name.")
+    logging.info("Retrieving names order by name.")
     with connection, connection.cursor() as cursor:
-        cursor.execute("select * from snippets order by keyword")
+        cursor.execute("select keyword from snippets order by keyword")
         rows = cursor.fetchall()
     logging.debug("Names of snippets retrieved successfully.")
     
