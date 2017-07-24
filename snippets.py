@@ -41,6 +41,9 @@ def get(name):
     snippet = cursor.fetchone()
     connection.commit()
     logging.debug("Snippet retrieved successfully.")
+    if not snippet:
+        # No snippet was found with that name
+        return "404: Snippet Not Found"
     #logging.error("FIXME: Unimplemented - get({!r})".format(name))
     return snippet[1]
     
