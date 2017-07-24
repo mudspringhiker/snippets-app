@@ -23,7 +23,7 @@ def get(name):
     Returns the snippet.
     """
     logging.error("FIXME: Unimplemented - get({!r})".format(name))
-    return ""
+    return "name"
     
     
 def main():
@@ -46,6 +46,16 @@ def main():
     
     arguments = parser.parse_args()
 
+    # Convert parsed arguments from Namespace to dictionary
+    arguments = vars(arguments)
+    command = arguments.pop("command")
+    
+    if command == "put":
+        name, snippet = put(**arguments)
+        print("Stored {!r} as {!r}".format(snippet, name))
+    elif command == "get":
+        snippet = get(**arguments)
+        print("Retrieved snippet: {!r}".format(snippet))
 
 
 if __name__ == "__main__":
