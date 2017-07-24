@@ -64,6 +64,25 @@ def catalog():
     return rows
     
     
+def search(string):
+    """Retrieve snippets which contain a given string anywhere in
+    
+    the snippet. If there is no such snippet, return 'No snippet containing
+    
+    the string found'.
+    """
+    logging.info("Retrieving snippets containing the search string.")
+    with connection, connection.cursor() as cursor:
+        cursor.execute("select message from snippets where message like '%%s%'", (string,))
+        rows = cursor.fetchall()
+    logging.debug("Snippets containing the search string retrieved successfully.")
+    
+    if not rows:
+        return "No snippets with the search string found."
+    
+    return rows
+    
+    
 def main():
     """Main function"""
     logging.info("Constructing parser")
@@ -86,6 +105,11 @@ def main():
     logging.debug("Constructing catalog subparser")
     put_parser = subparsers.add_parser("catalog", help="Retrieve names of snippets")
     
+    # Subparser for the search command
+    logging.debug("Constructing search subparser")
+    put_parser = subparsers.add_parser("search", help="Retrieve snippets containing search string")
+    put_parser.add_argument("string", help="String  to search in snippet")
+    
     arguments = parser.parse_args()
 
     # Convert parsed arguments from Namespace to dictionary
@@ -99,8 +123,12 @@ def main():
         snippet = get(**arguments)
         print("Retrieved snippet: {!r}".format(snippet))
     elif command == "catalog":
-        print("Retrieved names of snippets: {!r}".format(catalog()))
-
+        names = catalog()
+        print("Retrieved names of snippets: {!r}".format(names))
+    elif command == "search":
+        snippets = search(**arguments)
+        print("Snippets containing the string: {!r}".format(snippets))
+        
 
 if __name__ == "__main__":
     main()
