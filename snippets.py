@@ -24,7 +24,7 @@ def put(name, snippet):
         cursor.execute(command, (name, snippet))
     except psycopg2.IntegrityError as e:
         connection.rollback()
-        command = "update snippets set message=% where keyword=%s"
+        command = "update snippets set message=%s where keyword=%s"
         cursor.execute(command, (snippet, name))
     connection.commit()
     logging.debug("Snippet stored successfully.")
@@ -40,17 +40,21 @@ def get(name):
     Returns the snippet.
     """
     logging.info("Retrieving the snippet for {!r}".format(name))
-    cursor = connection.cursor()
-    command = "select * from snippets where keyword=(%s)"
-    cursor.execute(command, (name,))
-    snippet = cursor.fetchone()
-    connection.commit()
+    with connection, connection.cursor() as cursor:
+        cursor.execute("select message from snippets where keyword=%s", (name,))
+        row = cursor.fetchone()
+    
+    # cursor = connection.cursor()
+    # command = "select message from snippets where keyword=%s"
+    # cursor.execute(command, (name,))
+    # row = cursor.fetchone()
+    # connection.commit()
     logging.debug("Snippet retrieved successfully.")
-    if not snippet:
+    if not row:
         # No snippet was found with that name
         return "404: Snippet Not Found"
     #logging.error("FIXME: Unimplemented - get({!r})".format(name))
-    return snippet[1]
+    return row[0]
     
     
 def main():
