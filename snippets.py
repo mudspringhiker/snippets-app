@@ -54,7 +54,7 @@ def catalog():
     """
     logging.info("Retrieving names order by name.")
     with connection, connection.cursor() as cursor:
-        cursor.execute("select keyword from snippets order by keyword")
+        cursor.execute("select keyword from snippets where not hidden order by keyword")
         rows = cursor.fetchall()
     logging.debug("Names of snippets retrieved successfully.")
     
@@ -99,17 +99,17 @@ def main():
     
     # Subparser for the get command
     logging.debug("Constructing get subparser")
-    put_parser = subparsers.add_parser("get", help="Retrieve a snippet")
-    put_parser.add_argument("name", help="Name of the snippet")
+    get_parser = subparsers.add_parser("get", help="Retrieve a snippet")
+    get_parser.add_argument("name", help="Name of the snippet")
     
     # Subparser for the catalog command
     logging.debug("Constructing catalog subparser")
-    put_parser = subparsers.add_parser("catalog", help="Retrieve names of snippets")
+    catalog_parser = subparsers.add_parser("catalog", help="Retrieve names of snippets")
     
     # Subparser for the search command
     logging.debug("Constructing search subparser")
-    put_parser = subparsers.add_parser("search", help="Retrieve snippets containing search string")
-    put_parser.add_argument("string", help="String  to search in snippet")
+    search_parser = subparsers.add_parser("search", help="Retrieve snippets containing search string")
+    search_parser.add_argument("string", help="String  to search in snippet")
     
     arguments = parser.parse_args()
 
