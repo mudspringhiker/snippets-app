@@ -1,6 +1,4 @@
-import logging
-import argparse
-import psycopg2
+import logging, argparse, psycopg2
 
 
 # Set the log output file, and the log level
@@ -31,7 +29,8 @@ def put(name, snippet):
     
 
 def get(name):
-    """Retrieve the snippet with a given name.
+    """
+    Retrieve the snippet with a given name.
 
     If there is no such snippet, return '404: Snippet Not Found'.
 
@@ -50,7 +49,8 @@ def get(name):
     
     
 def catalog():
-    """Retrieve names from the table order by name.
+    """
+    Retrieve names from the table order by name.
     """
     logging.info("Retrieving names order by name.")
     with connection, connection.cursor() as cursor:
@@ -65,7 +65,8 @@ def catalog():
     
     
 def search(string):
-    """Retrieve snippets which contain a given string anywhere in
+    """
+    Retrieve snippets which contain a given string anywhere in
     
     the snippet. If there is no such snippet, return 'No snippet containing
     
@@ -73,7 +74,7 @@ def search(string):
     """
     logging.info("Retrieving snippets containing the search string.")
     with connection, connection.cursor() as cursor:
-        cursor.execute("select message from snippets where message like '%%s%'", (string,))
+        cursor.execute("select message from snippets where message like %s", ('%'+string+'%',))
         rows = cursor.fetchall()
     logging.debug("Snippets containing the search string retrieved successfully.")
     
